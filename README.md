@@ -43,14 +43,14 @@ These values are needed when deploying the solution. At deployment time, you are
 Create a resource group for the deployment.
 
 ```azurecli
-az group create --name github-pr-teams-notification-010 --location eastus
+az group create --name github-pr-teams-notification-docker-001 --location eastus
 ```
 
 Run the following command to initiate the deployment. When prompted, enter the value for each parameter.
 
 ```azurecli
 az deployment group create \
-    --resource-group github-pr-teams-notification-010 \
+    --resource-group github-pr-teams-notification-docker-001 \
     --template-uri https://raw.githubusercontent.com/neilpeterson/github-pull-teams-notification/master/deployment/azuredeploy.json
 ```
 
