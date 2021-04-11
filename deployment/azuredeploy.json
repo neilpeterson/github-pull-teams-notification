@@ -27,7 +27,8 @@
             "type": "string"
         },
         "NotificationDockerImage": {
-            "type": "string"
+            "type": "string",
+            "defaultValue": "neilpeterson/get-pr-teams-notification:v1"
         },
         "RemoveSourceControll": {
             "type": "bool",
