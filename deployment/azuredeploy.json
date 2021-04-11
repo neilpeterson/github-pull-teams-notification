@@ -41,9 +41,7 @@
         "key-vault-access-tempalte": "[uri(deployment().properties.templateLink.uri, 'nestedtemplates/azuredeploy-key-vault-access.json')]",
         "key-vault-template": "[uri(deployment().properties.templateLink.uri, 'nestedtemplates/azuredeploy-key-vault.json')]",
         "log-analytics-template": "[uri(deployment().properties.templateLink.uri, 'nestedtemplates/azuredeploy-log-analytics.json')]",
-        // "powershell-function-template": "[uri(deployment().properties.templateLink.uri, 'nestedtemplates/azuredeploy-powershell-function.json')]",
         "function-notification-template": "[uri(deployment().properties.templateLink.uri, 'nestedtemplates/azuredeploy-function-notification.json')]",
-        //"powershell-function-template": "[uri(deployment().properties.templateLink.uri, 'nestedtemplates/azuredeploy-powershell-function.json')]",
         "alertQuery": "[concat('AppRequests\n| where TimeGenerated > ago(10m) \n| where Name == ''github-ado-sync''\n| where Success == false')]",
         "functionSourceRepo": "https://github.com/neilpeterson/github-pr-teams-notification.git",
         "kay-vault-name": "[concat('kv',variables('uniqueName'), 'kv')]",
@@ -179,7 +177,7 @@
             "comments": "Deploys an Azure PowerShell function and all related app service infrastructure. The function logic comes from a source control resource.",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2019-10-01",
-            "name": "powershell-function",
+            "name": "function-notification",
             "dependsOn": [
                 "[resourceId('Microsoft.Resources/deployments', 'log-analytics')]",
                 "[resourceId('Microsoft.Resources/deployments', 'key-vault')]"
@@ -234,7 +232,7 @@
             "name": "key-vault-access",
             "dependsOn": [
                 "[resourceId('Microsoft.Resources/deployments', 'key-vault')]",
-                "[resourceId('Microsoft.Resources/deployments', 'powershell-function')]"
+                "[resourceId('Microsoft.Resources/deployments', 'function-notification')]"
             ],
             "properties": {
                 "mode": "Incremental",
@@ -244,7 +242,7 @@
                 },
                 "parameters": {
                     "AccessIdentity": {
-                        "value": "[reference('powershell-function').outputs.identity.value]"
+                        "value": "[reference('function-notification').outputs.identity.value]"
                     },
                     "KeyVaultName": {
                         "value": "[variables('kay-vault-name')]"
@@ -259,7 +257,7 @@
             "apiVersion": "2019-10-01",
             "name": "bootstrap",
             "dependsOn": [
-                "[resourceId('Microsoft.Resources/deployments', 'powershell-function')]"
+                "[resourceId('Microsoft.Resources/deployments', 'function-notification')]"
             ],
             "properties": {
                 "mode": "Incremental",
