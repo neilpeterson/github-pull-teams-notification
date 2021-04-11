@@ -51,7 +51,7 @@ Run the following command to initiate the deployment. When prompted, enter the v
 ```azurecli
 az deployment group create \
     --resource-group github-pr-teams-notification-010 \
-    --template-uri https://raw.githubusercontent.com/neilpeterson/github-pr-teams-notification/master/deployment/azuredeploy.json
+    --template-uri https://raw.githubusercontent.com/neilpeterson/github-pull-teams-notification/master/deployment/azuredeploy.json
 ```
 
 Add `RemoveSourceControll=true` to remove source controll integration.
