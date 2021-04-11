@@ -1,0 +1,174 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "workSpaceResourceId": {
+            "type": "string"
+        },
+        "FunctionAppName": {
+            "type": "string"
+        },
+        "GitHubPAT": {
+            "type": "securestring"
+        },
+        "TeamsWebHook": {
+            "type": "string"
+        },
+        "PullRequestsAPI": {
+            "type": "string"
+        },
+        "PullRequestTitleFilter": {
+            "type": "string"
+        },
+        "DelayDays": {
+            "type": "int"
+        },
+        "PreDeterminedCommentLabel": {
+            "type": "string"
+        },
+        "PreDeterminedComment": {
+            "type": "string"
+        },
+        "NotificationDockerImage": {
+            "type": "string"
+        },
+        "Location": {
+            "type": "string"
+        }
+    },
+    "variables": {
+        "hostingPlanName": "[parameters('FunctionAppName')]",
+        "storageAccountName": "[concat('storage', uniquestring(resourceGroup().id))]",
+        "timezone": "UTC",
+        "runtimeStack": "powershell",
+        "workspaceName": "[uniqueString(subscription().subscriptionId, resourceGroup().id)]"
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Insights/components",
+            "apiVersion": "2020-02-02-preview",
+            "name": "[parameters('FunctionAppName')]",
+            "location": "[parameters('Location')]",
+            "properties": {
+                "ApplicationId": "[parameters('FunctionAppName')]",
+                "Application_Type": "other",
+                "WorkspaceResourceId": "[parameters('workSpaceResourceId')]"
+            }
+        },
+        {
+            "type": "Microsoft.Storage/storageAccounts",
+            "apiVersion": "2019-06-01",
+            "name": "[variables('storageAccountName')]",
+            "location": "[parameters('Location')]",
+            "sku": {
+                "name": "Standard_LRS"
+            },
+            "kind": "Storage"
+        },
+        {
+            "type": "Microsoft.Web/serverfarms",
+            "apiVersion": "2020-06-01",
+            "name": "[variables('hostingPlanName')]",
+            "location": "[resourceGroup().location]",
+            "kind": "linux",
+            "properties": {
+                "reserved": true
+            },
+            "sku": {
+                "name": "S1",
+                "tier": "Standard"
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites",
+            "apiVersion": "2018-11-01",
+            "name": "[parameters('FunctionAppName')]",
+            "kind": "functionapp,linux,container",
+            "location": "[resourceGroup().location]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/serverfarms/', variables('hostingPlanName'))]",
+                "[resourceId('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]",
+                "[resourceId('Microsoft.OperationalInsights/workspaces', variables('workspaceName'))]",
+                "[resourceId('Microsoft.Insights/components', parameters('FunctionAppName'))]"
+            ],
+            "properties": {
+                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms/', variables('hostingPlanName'))]",
+                "clientAffinityEnabled": false,
+                "reserved": true,
+                "siteConfig": {
+                    "httpLoggingEnabled": true,
+                    "logsDirectorySizeLimit": 50,
+                    "linuxFxVersion": "[concat('DOCKER|', parameters('NotificationDockerImage'))]",
+                    "alwaysOn": true,
+                    "http20Enabled": true,
+                    "appSettings": [
+                        {
+                            "name": "FUNCTIONS_WORKER_RUNTIME",
+                            "value": "[variables('runtimeStack')]"
+                        },
+                        {
+                            "name": "AzureWebJobsStorage",
+                            "value": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('storageAccountName'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), '2017-06-01').keys[0].value)]"
+                        },
+                        {
+                            "name": "FUNCTIONS_EXTENSION_VERSION",
+                            "value": "~3"
+                        },
+                        {
+                            "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
+                            "value": "[reference(resourceId('microsoft.insights/components/', parameters('FunctionAppName')), '2018-05-01-preview').InstrumentationKey]"
+                        },
+                        {
+                            "name": "WEBSITE_CONTENTAZUREFILECONNECTIONSTRING",
+                            "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storageAccountName'), ';AccountKey=', listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')),'2017-06-01').keys[0].value)]"
+                        },
+                        {
+                            "name": "WEBSITE_CONTENTSHARE",
+                            "value": "[toLower(parameters('FunctionAppName'))]"
+                        },
+                        {
+                            "name": "WEBSITE_TIME_ZONE",
+                            "value": "[variables('timezone')]"
+                        },
+                        {
+                            "name": "GitHubPAT",
+                            "value": "[parameters('GitHubPAT')]"
+                        },
+                        {
+                            "name": "TeamsWebHook",
+                            "value": "[parameters('TeamsWebHook')]"
+                        },
+                        {
+                            "name": "PullRequestsAPI",
+                            "value": "[parameters('PullRequestsAPI')]"
+                        },
+                        {
+                            "name": "PullRequestTitleFilter",
+                            "value": "[parameters('PullRequestTitleFilter')]"
+                        },
+                        {
+                            "name": "DelayDays",
+                            "value": "[parameters('DelayDays')]"
+                        },
+                        {
+                            "name": "PreDeterminedComment",
+                            "value": "[parameters('PreDeterminedComment')]"
+                        },
+                        {
+                            "name": "PreDeterminedCommentLabel",
+                            "value": "[parameters('PreDeterminedCommentLabel')]"
+                        },
+                        {
+                            "name": "DOCKER_REGISTRY_SERVER_URL",
+                            "value": "https://index.docker.io/v1"
+                        },
+                        {
+                            "name": "DOCKER_CUSTOM_IMAGE_NAME",
+                            "value": "neilpeterson/get-pr-teams-notification:v1"
+                        }
+                    ]
+                }
+            }
+        }
+    ]
+}

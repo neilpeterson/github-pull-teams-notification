@@ -1,0 +1,68 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "location": {
+            "type": "string"
+        },
+        "workspaceName": {
+            "type": "string"
+        },
+        "alertQuery": {
+            "type": "string"
+        },
+        "emailAddress": {
+            "type": "string"
+        }
+    },
+    "resources": [
+        {
+            "type": "microsoft.insights/scheduledqueryrules",
+            "apiVersion": "2018-04-16",
+            "name": "FailedFunctionExecution",
+            "location": "[parameters('location')]",
+            "properties": {
+                "enabled": "true",
+                "source": {
+                    "query": "[parameters('alertQuery')]",
+                    "dataSourceId": "[resourceId('microsoft.operationalinsights/workspaces', parameters('workspaceName'))]",
+                    "queryType": "ResultCount"
+                },
+                "schedule": {
+                    "frequencyInMinutes": 10,
+                    "timeWindowInMinutes": 10
+                },
+                "action": {
+                    "severity": "3",
+                    "aznsAction": {
+                        "actionGroup": [
+                            "[resourceId('microsoft.insights/actionGroups', 'EmailOnAlert')]"
+                        ]
+                    },
+                    "trigger": {
+                        "thresholdOperator": "GreaterThan",
+                        "threshold": 0
+                    },
+                    "odata.type": "Microsoft.WindowsAzure.Management.Monitoring.Alerts.Models.Microsoft.AppInsights.Nexus.DataContracts.Resources.ScheduledQueryRules.AlertingAction"
+                }
+            }
+        },
+        {
+            "type": "microsoft.insights/actionGroups",
+            "apiVersion": "2019-03-01",
+            "name": "EmailOnAlert",
+            "location": "Global",
+            "properties": {
+                "groupShortName": "emailService",
+                "enabled": true,
+                "emailReceivers": [
+                    {
+                        "name": "emailAction",
+                        "emailAddress": "[parameters('emailAddress')]",
+                        "useCommonAlertSchema": false
+                    }
+                ]
+            }
+        }
+    ]
+}
