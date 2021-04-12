@@ -104,7 +104,7 @@
                         },
                         {
                             "name": "FUNCTIONS_EXTENSION_VERSION",
-                            "value": "~2"
+                            "value": "~3"
                         },
                         {
                             "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
@@ -154,15 +154,15 @@
                 }
             }
         }
-    ],
-    "outputs": {
-        "functionKey": {
-            "type": "securestring",
-            "value": "[listkeys(concat(resourceId('Microsoft.Web/sites', parameters('FunctionAppName')), '/host/default/'),'2018-02-01').masterkey]"
-        },
-        "identity": {
-            "type": "string",
-            "value": "[reference(resourceId('Microsoft.Web/sites', parameters('FunctionAppName')), '2019-08-01', 'full').identity.principalId]"
-        }
-    }
+    ]
+    // "outputs": {
+    //     "functionKey": {
+    //         "type": "securestring",
+    //         "value": "[listkeys(concat(resourceId('Microsoft.Web/sites', parameters('FunctionAppName')), '/host/default/'),'2018-02-01').masterkey]"
+    //     },
+    //     "identity": {
+    //         "type": "string",
+    //         "value": "[reference(resourceId('Microsoft.Web/sites', parameters('FunctionAppName')), '2019-08-01', 'full').identity.principalId]"
+    //     }
+    // }
 }
