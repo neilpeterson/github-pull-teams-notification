@@ -42,6 +42,7 @@
         "key-vault-template": "[uri(deployment().properties.templateLink.uri, 'nestedtemplates/azuredeploy-key-vault.json')]",
         "log-analytics-template": "[uri(deployment().properties.templateLink.uri, 'nestedtemplates/azuredeploy-log-analytics.json')]",
         "function-notification-template": "[uri(deployment().properties.templateLink.uri, 'nestedtemplates/azuredeploy-function-notification.json')]",
+        "function-comment-template": "[uri(deployment().properties.templateLink.uri, 'nestedtemplates/azuredeploy-function-comment.json')]",
         "alertQuery": "[concat('AppRequests\n| where TimeGenerated > ago(10m) \n| where Name == ''github-ado-sync''\n| where Success == false')]",
         "function-comment-repo": "https://github.com/neilpeterson/github-pull-teams-comment",
         "kay-vault-name": "[concat('kv',variables('uniqueName'), 'kv')]",
@@ -133,7 +134,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[variables('')]",
+                    "uri": "[variables('function-comment-template')]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
