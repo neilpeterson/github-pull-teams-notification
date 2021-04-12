@@ -50,7 +50,7 @@ Run the following command to initiate the deployment. When prompted, enter the v
 
 ```azurecli
 az deployment group create \
-    --resource-group github-pr-teams-notification-docker-003 \
+    --resource-group nepetersfuncdoc010 \
     --template-uri https://raw.githubusercontent.com/neilpeterson/github-pull-teams-notification/master/deployment/azuredeploy.json
 ```
 

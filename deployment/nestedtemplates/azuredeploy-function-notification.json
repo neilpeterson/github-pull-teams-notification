@@ -38,24 +38,9 @@
     },
     "variables": {
         "hostingPlanName": "[parameters('FunctionAppName')]",
-        "storageAccountName": "[concat('storage', uniquestring(resourceGroup().id))]",
-        "workspaceName": "[uniqueString(subscription().subscriptionId, resourceGroup().id)]"
+        "storageAccountName": "[concat('storage', uniquestring(resourceGroup().id))]"
     },
     "resources": [
-        {
-            "type": "Microsoft.OperationalInsights/workspaces",
-            "apiVersion": "2020-08-01",
-            "name": "[variables('workspaceName')]",
-            "location": "[parameters('location')]",
-            "properties": {
-                "sku": {
-                    "name": "Free"
-                },
-                "features": {
-                    "searchVersion": 1
-                }
-            }
-        },
         {
             "type": "Microsoft.Insights/components",
             "apiVersion": "2020-02-02-preview",
