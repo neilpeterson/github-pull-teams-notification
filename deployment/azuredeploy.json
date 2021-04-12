@@ -43,7 +43,7 @@
         "log-analytics-template": "[uri(deployment().properties.templateLink.uri, 'nestedtemplates/azuredeploy-log-analytics.json')]",
         "function-notification-template": "[uri(deployment().properties.templateLink.uri, 'nestedtemplates/azuredeploy-function-notification.json')]",
         "alertQuery": "[concat('AppRequests\n| where TimeGenerated > ago(10m) \n| where Name == ''github-ado-sync''\n| where Success == false')]",
-        "functionSourceRepo": "https://github.com/neilpeterson/github-pr-teams-notification.git",
+        // "functionSourceRepo": "https://github.com/neilpeterson/github-pr-teams-notification.git",
         "kay-vault-name": "[concat('kv',variables('uniqueName'), 'kv')]",
         "location": "[resourceGroup().location]",
         "uniqueName": "[uniqueString(subscription().subscriptionId, resourceGroup().id)]"
