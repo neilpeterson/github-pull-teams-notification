@@ -74,7 +74,8 @@
                         },
                         {
                             "name": "GitHubPAT",
-                            "value": "[concat('@Microsoft.KeyVault(SecretUri=', parameters('GitHubPATUri'), ')')]"
+                            // "value": "[concat('@Microsoft.KeyVault(SecretUri=', parameters('GitHubPATUri'), ')')]"
+                            "vale": "[parameters('GitHubPATUri')]"
                         }
                     ],
                     "scmType": "None"
