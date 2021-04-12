@@ -39,11 +39,23 @@
     "variables": {
         "hostingPlanName": "[parameters('FunctionAppName')]",
         "storageAccountName": "[concat('storage', uniquestring(resourceGroup().id))]",
-        "timezone": "UTC",
-        "runtimeStack": "powershell",
         "workspaceName": "[uniqueString(subscription().subscriptionId, resourceGroup().id)]"
     },
     "resources": [
+        {
+            "type": "Microsoft.OperationalInsights/workspaces",
+            "apiVersion": "2020-08-01",
+            "name": "[variables('workspaceName')]",
+            "location": "[parameters('location')]",
+            "properties": {
+                "sku": {
+                    "name": "Free"
+                },
+                "features": {
+                    "searchVersion": 1
+                }
+            }
+        },
         {
             "type": "Microsoft.Insights/components",
             "apiVersion": "2020-02-02-preview",
@@ -102,16 +114,12 @@
                     "http20Enabled": true,
                     "appSettings": [
                         {
-                            "name": "FUNCTIONS_WORKER_RUNTIME",
-                            "value": "[variables('runtimeStack')]"
-                        },
-                        {
                             "name": "AzureWebJobsStorage",
                             "value": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('storageAccountName'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), '2017-06-01').keys[0].value)]"
                         },
                         {
                             "name": "FUNCTIONS_EXTENSION_VERSION",
-                            "value": "~3"
+                            "value": "~2"
                         },
                         {
                             "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
@@ -124,10 +132,6 @@
                         {
                             "name": "WEBSITE_CONTENTSHARE",
                             "value": "[toLower(parameters('FunctionAppName'))]"
-                        },
-                        {
-                            "name": "WEBSITE_TIME_ZONE",
-                            "value": "[variables('timezone')]"
                         },
                         {
                             "name": "GitHubPAT",
@@ -158,12 +162,8 @@
                             "value": "[parameters('PreDeterminedCommentLabel')]"
                         },
                         {
-                            "name": "DOCKER_REGISTRY_SERVER_URL",
-                            "value": "https://index.docker.io/v1"
-                        },
-                        {
-                            "name": "DOCKER_CUSTOM_IMAGE_NAME",
-                            "value": "neilpeterson/get-pr-teams-notification:v1"
+                            "name": "WEBSITES_ENABLE_APP_SERVICE_STORAGE",
+                            "value": "false"
                         }
                     ]
                 }
