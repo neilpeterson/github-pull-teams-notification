@@ -117,7 +117,7 @@
                 "name": "[variables('hostingPlanName')]",
                 "maximumElasticWorkerCount": 20
             }
-        },
+        }
         // {
         //     "type": "Microsoft.Storage/storageAccounts",
         //     "apiVersion": "2019-06-01",
@@ -128,17 +128,17 @@
         //     },
         //     "kind": "Storage"
         // },
-        {
-            "type": "Microsoft.Insights/components",
-            "apiVersion": "2020-02-02-preview",
-            "name": "[parameters('FunctionAppName')]",
-            "location": "[variables('ApplicationInsightsLocation')]",
-            "properties": {
-                "ApplicationId": "[parameters('FunctionAppName')]",
-                "Application_Type": "other",
-                "WorkspaceResourceId": "[parameters('WorkSpaceResourceId')]"
-            }
-        }
+        // {
+        //     "type": "Microsoft.Insights/components",
+        //     "apiVersion": "2020-02-02-preview",
+        //     "name": "[parameters('FunctionAppName')]",
+        //     "location": "[variables('ApplicationInsightsLocation')]",
+        //     "properties": {
+        //         "ApplicationId": "[parameters('FunctionAppName')]",
+        //         "Application_Type": "other",
+        //         "WorkspaceResourceId": "[parameters('WorkSpaceResourceId')]"
+        //     }
+        // }
     ],
     "outputs": {
         "functionKey": {

@@ -43,17 +43,17 @@
         "hostingPlanName": "[parameters('FunctionAppName')]"
     },
     "resources": [
-        {
-            "type": "Microsoft.Insights/components",
-            "apiVersion": "2020-02-02-preview",
-            "name": "[parameters('FunctionAppName')]",
-            "location": "[parameters('Location')]",
-            "properties": {
-                "ApplicationId": "[parameters('FunctionAppName')]",
-                "Application_Type": "other",
-                "WorkspaceResourceId": "[parameters('workSpaceResourceId')]"
-            }
-        },
+        // {
+        //     "type": "Microsoft.Insights/components",
+        //     "apiVersion": "2020-02-02-preview",
+        //     "name": "[parameters('FunctionAppName')]",
+        //     "location": "[parameters('Location')]",
+        //     "properties": {
+        //         "ApplicationId": "[parameters('FunctionAppName')]",
+        //         "Application_Type": "other",
+        //         "WorkspaceResourceId": "[parameters('workSpaceResourceId')]"
+        //     }
+        // },
         {
             "type": "Microsoft.Web/serverfarms",
             "apiVersion": "2020-06-01",
