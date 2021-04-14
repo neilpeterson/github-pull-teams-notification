@@ -32,7 +32,7 @@
         },
         "RemoveSourceControll": {
             "type": "bool",
-            "defaultValue": true
+            "defaultValue": false
         }
     },
     "variables": {
@@ -140,7 +140,8 @@
             "name": "function-comment",
             "dependsOn": [
                 "[resourceId('Microsoft.Resources/deployments', 'log-analytics')]",
-                "[resourceId('Microsoft.Resources/deployments', 'key-vault')]"
+                "[resourceId('Microsoft.Resources/deployments', 'key-vault')]",
+                "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]"
             ],
             "properties": {
                 "mode": "Incremental",
@@ -164,6 +165,9 @@
                     "GitHubPATUri": {
                         // "value": "[reference('key-vault').outputs.GitHubPATUri.value]"
                             "value": "[parameters('GitHubPAT')]"
+                    },
+                    "storageAccountName": {
+                        "value": "[variables('storageAccountName')]"
                     }
                 }
             }
@@ -176,7 +180,8 @@
             "dependsOn": [
                 "[resourceId('Microsoft.Resources/deployments', 'log-analytics')]",
                 "[resourceId('Microsoft.Resources/deployments', 'key-vault')]",
-                "[resourceId('Microsoft.Resources/deployments', 'function-comment')]"
+                "[resourceId('Microsoft.Resources/deployments', 'function-comment')]",
+                "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]"
             ],
             "properties": {
                 "mode": "Incremental",
@@ -217,6 +222,9 @@
                     },
                     "location": {
                         "value": "[variables('location')]"
+                    },
+                    "storageAccountName": {
+                        "value": "[variables('storageAccountName')]"
                     }
                 }
             }
