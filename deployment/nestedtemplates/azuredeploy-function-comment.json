@@ -16,6 +16,9 @@
         },
         "GitHubPATUri": {
             "type": "securestring"
+        },
+        "storageAccountName": {
+            "type" : "string"
         }
     },
     "variables": {
@@ -38,7 +41,7 @@
             },
             "dependsOn": [
                 "[resourceId('Microsoft.Web/serverfarms/', variables('hostingPlanName'))]",
-                "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]",
+                // "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))]",
                 "[resourceId('microsoft.insights/components/', parameters('FunctionAppName'))]"
             ],
             "properties": {
@@ -50,7 +53,7 @@
                         },
                         {
                             "name": "AzureWebJobsStorage",
-                            "value": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('storageAccountName'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), '2017-06-01').keys[0].value)]"
+                            "value": "[concat('DefaultEndpointsProtocol=https;AccountName=',parameters('storageAccountName'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2017-06-01').keys[0].value)]"
                         },
                         {
                             "name": "FUNCTIONS_EXTENSION_VERSION",
@@ -62,7 +65,7 @@
                         },
                         {
                             "name": "WEBSITE_CONTENTAZUREFILECONNECTIONSTRING",
-                            "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storageAccountName'), ';AccountKey=', listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')),'2017-06-01').keys[0].value)]"
+                            "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', parameters('storageAccountName'), ';AccountKey=', listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')),'2017-06-01').keys[0].value)]"
                         },
                         {
                             "name": "WEBSITE_CONTENTSHARE",
@@ -115,16 +118,16 @@
                 "maximumElasticWorkerCount": 20
             }
         },
-        {
-            "type": "Microsoft.Storage/storageAccounts",
-            "apiVersion": "2019-06-01",
-            "name": "[variables('storageAccountName')]",
-            "location": "[parameters('Location')]",
-            "sku": {
-                "name": "Standard_LRS"
-            },
-            "kind": "Storage"
-        },
+        // {
+        //     "type": "Microsoft.Storage/storageAccounts",
+        //     "apiVersion": "2019-06-01",
+        //     "name": "[parameters('storageAccountName')]",
+        //     "location": "[parameters('Location')]",
+        //     "sku": {
+        //         "name": "Standard_LRS"
+        //     },
+        //     "kind": "Storage"
+        // },
         {
             "type": "Microsoft.Insights/components",
             "apiVersion": "2020-02-02-preview",

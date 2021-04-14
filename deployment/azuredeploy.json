@@ -47,7 +47,8 @@
         "function-comment-repo": "https://github.com/neilpeterson/github-pull-teams-comment",
         "kay-vault-name": "[concat('kv',variables('uniqueName'), 'kv')]",
         "location": "[resourceGroup().location]",
-        "uniqueName": "[uniqueString(subscription().subscriptionId, resourceGroup().id)]"
+        "uniqueName": "[uniqueString(subscription().subscriptionId, resourceGroup().id)]",
+        "storageAccountName": "[concat('storage', uniquestring(resourceGroup().id))]"
     },
     "resources": [
         {
@@ -67,6 +68,16 @@
                     }
                 }
             }
+        },
+        {
+            "type": "Microsoft.Storage/storageAccounts",
+            "apiVersion": "2019-06-01",
+            "name": "[variables('storageAccountName')]",
+            "location": "[resourceGroup().location]",
+            "sku": {
+                "name": "Standard_LRS"
+            },
+            "kind": "Storage"
         },
         {
             "comments": "Deploys an alert (function execution failure) and an action group to send an email on alert.",

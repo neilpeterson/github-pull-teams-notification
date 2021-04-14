@@ -34,11 +34,13 @@
         },
         "Location": {
             "type": "string"
+        },
+        "storageAccountName": {
+            "type" : "string"
         }
     },
     "variables": {
-        "hostingPlanName": "[parameters('FunctionAppName')]",
-        "storageAccountName": "[concat('storage', uniquestring(resourceGroup().id))]"
+        "hostingPlanName": "[parameters('FunctionAppName')]"
     },
     "resources": [
         {
@@ -51,16 +53,6 @@
                 "Application_Type": "other",
                 "WorkspaceResourceId": "[parameters('workSpaceResourceId')]"
             }
-        },
-        {
-            "type": "Microsoft.Storage/storageAccounts",
-            "apiVersion": "2019-06-01",
-            "name": "[variables('storageAccountName')]",
-            "location": "[parameters('Location')]",
-            "sku": {
-                "name": "Standard_LRS"
-            },
-            "kind": "Storage"
         },
         {
             "type": "Microsoft.Web/serverfarms",
@@ -84,7 +76,7 @@
             "location": "[resourceGroup().location]",
             "dependsOn": [
                 "[resourceId('Microsoft.Web/serverfarms/', variables('hostingPlanName'))]",
-                "[resourceId('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]",
+                "[resourceId('Microsoft.Storage/storageAccounts/', parameters('storageAccountName'))]",
                 "[resourceId('Microsoft.Insights/components', parameters('FunctionAppName'))]"
             ],
             "properties": {
@@ -100,7 +92,7 @@
                     "appSettings": [
                         {
                             "name": "AzureWebJobsStorage",
-                            "value": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('storageAccountName'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), '2017-06-01').keys[0].value)]"
+                            "value": "[concat('DefaultEndpointsProtocol=https;AccountName=',parameters('storageAccountName'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2017-06-01').keys[0].value)]"
                         },
                         {
                             "name": "FUNCTIONS_EXTENSION_VERSION",
@@ -112,7 +104,7 @@
                         },
                         {
                             "name": "WEBSITE_CONTENTAZUREFILECONNECTIONSTRING",
-                            "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storageAccountName'), ';AccountKey=', listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')),'2017-06-01').keys[0].value)]"
+                            "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', parameters('storageAccountName'), ';AccountKey=', listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')),'2017-06-01').keys[0].value)]"
                         },
                         {
                             "name": "WEBSITE_CONTENTSHARE",
