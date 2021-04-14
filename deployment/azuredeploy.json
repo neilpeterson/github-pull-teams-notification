@@ -95,7 +95,7 @@
                 },
                 "parameters": {
                     "workspaceName": {
-                        "value": "[reference('log-analytics').outputs.workspaceName.value]"
+                        "value": "log-analytics"
                     },
                     "alertQuery": {
                         "value": "[variables('alertQuery')]"
@@ -151,7 +151,7 @@
                 },
                 "parameters": {
                     "workSpaceResourceId": {
-                        "value": "[reference('log-analytics').outputs.workSpaceResourceId.value]"
+                        "value": "[resourceId('Microsoft.Resources/deployments', 'log-analytics')]"
                     },
                     "functionAppName": {
                         "value": "[concat('comment-', variables('uniqueName'))]"
@@ -191,7 +191,7 @@
                 },
                 "parameters": {
                     "workSpaceResourceId": {
-                        "value": "[reference('log-analytics').outputs.workSpaceResourceId.value]"
+                        "value": "[resourceId('Microsoft.Resources/deployments', 'log-analytics')]"
                     },
                     "FunctionAppName": {
                         "value": "[concat('notification-', variables('uniqueName'))]"
