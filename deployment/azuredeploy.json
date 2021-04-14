@@ -40,6 +40,7 @@
         "bootstrap-template": "[uri(deployment().properties.templateLink.uri, 'nestedtemplates/azuredeploy-bootstrap.json')]",
         "key-vault-access-tempalte": "[uri(deployment().properties.templateLink.uri, 'nestedtemplates/azuredeploy-key-vault-access.json')]",
         "key-vault-template": "[uri(deployment().properties.templateLink.uri, 'nestedtemplates/azuredeploy-key-vault.json')]",
+        "storage-account-template": "[uri(deployment().properties.templateLink.uri, 'nestedtemplates/azuredeploy-storage.json')]",
         "log-analytics-template": "[uri(deployment().properties.templateLink.uri, 'nestedtemplates/azuredeploy-log-analytics.json')]",
         "function-notification-template": "[uri(deployment().properties.templateLink.uri, 'nestedtemplates/azuredeploy-function-notification.json')]",
         "function-comment-template": "[uri(deployment().properties.templateLink.uri, 'nestedtemplates/azuredeploy-function-comment.json')]",
@@ -47,8 +48,7 @@
         "function-comment-repo": "https://github.com/neilpeterson/github-pull-teams-comment",
         "kay-vault-name": "[concat('kv',variables('uniqueName'), 'kv')]",
         "location": "[resourceGroup().location]",
-        "uniqueName": "[uniqueString(subscription().subscriptionId, resourceGroup().id)]",
-        "storageAccountName": "[concat('storage', uniquestring(resourceGroup().id))]"
+        "uniqueName": "[uniqueString(subscription().subscriptionId, resourceGroup().id)]"
     },
     "resources": [
         {
@@ -70,45 +70,48 @@
             }
         },
         {
-            "type": "Microsoft.Storage/storageAccounts",
-            "apiVersion": "2019-06-01",
-            "name": "[variables('storageAccountName')]",
-            "location": "[resourceGroup().location]",
-            "sku": {
-                "name": "Standard_LRS"
-            },
-            "kind": "Storage"
+            "comments": "Deploys a Log Analytics workspace.",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2019-10-01",
+            "name": "storage-account",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[variables('storage-account-template')]",
+                    "contentVersion": "1.0.0.0"
+                }
+            }
         },
-        // {
-        //     "comments": "Deploys an alert (function execution failure) and an action group to send an email on alert.",
-        //     "type": "Microsoft.Resources/deployments",
-        //     "apiVersion": "2019-10-01",
-        //     "name": "alert",
-        //     "dependsOn": [
-        //         "[resourceId('Microsoft.Resources/deployments', 'log-analytics')]"
-        //     ],
-        //     "properties": {
-        //         "mode": "Incremental",
-        //         "templateLink": {
-        //             "uri": "[variables('alert-template')]",
-        //             "contentVersion": "1.0.0.0"
-        //         },
-        //         "parameters": {
-        //             "workspaceName": {
-        //                 "value": "log-analytics"
-        //             },
-        //             "alertQuery": {
-        //                 "value": "[variables('alertQuery')]"
-        //             },
-        //             "location": {
-        //                 "value": "[variables('location')]"
-        //             },
-        //             "emailAddress": {
-        //                 "value": "[parameters('emailAddress')]"
-        //             }
-        //         }
-        //     }
-        // },
+        {
+            "comments": "Deploys an alert (function execution failure) and an action group to send an email on alert.",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2019-10-01",
+            "name": "alert",
+            "dependsOn": [
+                "[resourceId('Microsoft.Resources/deployments', 'log-analytics')]"
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[variables('alert-template')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "workspaceName": {
+                        "value": "[reference('log-analytics').outputs.workspaceName.value]"
+                    },
+                    "alertQuery": {
+                        "value": "[variables('alertQuery')]"
+                    },
+                    "location": {
+                        "value": "[variables('location')]"
+                    },
+                    "emailAddress": {
+                        "value": "[parameters('emailAddress')]"
+                    }
+                }
+            }
+        },
         {
             "comments": "Deploys an Azure Key Vault instance and creates secrets for both GitHub and ADO access.",
             "type": "Microsoft.Resources/deployments",
@@ -141,7 +144,7 @@
             "dependsOn": [
                 "[resourceId('Microsoft.Resources/deployments', 'log-analytics')]",
                 "[resourceId('Microsoft.Resources/deployments', 'key-vault')]",
-                "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]"
+                "[resourceId('Microsoft.Resources/deployments', 'storage-account')]"
             ],
             "properties": {
                 "mode": "Incremental",
@@ -151,7 +154,7 @@
                 },
                 "parameters": {
                     "workSpaceResourceId": {
-                        "value": "[resourceId('Microsoft.Resources/deployments', 'log-analytics')]"
+                        "value": "[reference('log-analytics').outputs.workSpaceResourceId.value]"
                     },
                     "functionAppName": {
                         "value": "[concat('comment-', variables('uniqueName'))]"
@@ -164,10 +167,10 @@
                     },
                     "GitHubPATUri": {
                         // "value": "[reference('key-vault').outputs.GitHubPATUri.value]"
-                            "value": "[parameters('GitHubPAT')]"
+                        "value": "[parameters('GitHubPAT')]"
                     },
                     "storageAccountName": {
-                        "value": "[variables('storageAccountName')]"
+                        "value": "[reference('log-analytics').outputs.storageAccountName.value]"
                     }
                 }
             }
@@ -181,7 +184,7 @@
                 "[resourceId('Microsoft.Resources/deployments', 'log-analytics')]",
                 "[resourceId('Microsoft.Resources/deployments', 'key-vault')]",
                 "[resourceId('Microsoft.Resources/deployments', 'function-comment')]",
-                "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]"
+                "[resourceId('Microsoft.Resources/deployments', 'storage-account')]"
             ],
             "properties": {
                 "mode": "Incremental",
@@ -191,7 +194,7 @@
                 },
                 "parameters": {
                     "workSpaceResourceId": {
-                        "value": "[resourceId('Microsoft.Resources/deployments', 'log-analytics')]"
+                        "value": "[reference('log-analytics').outputs.workSpaceResourceId.value]"
                     },
                     "FunctionAppName": {
                         "value": "[concat('notification-', variables('uniqueName'))]"
@@ -224,7 +227,7 @@
                         "value": "[variables('location')]"
                     },
                     "storageAccountName": {
-                        "value": "[variables('storageAccountName')]"
+                        "value": "[reference('log-analytics').outputs.storageAccountName.value]"
                     }
                 }
             }
