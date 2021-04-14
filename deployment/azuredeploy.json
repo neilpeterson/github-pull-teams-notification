@@ -79,36 +79,36 @@
             },
             "kind": "Storage"
         },
-        {
-            "comments": "Deploys an alert (function execution failure) and an action group to send an email on alert.",
-            "type": "Microsoft.Resources/deployments",
-            "apiVersion": "2019-10-01",
-            "name": "alert",
-            "dependsOn": [
-                "[resourceId('Microsoft.Resources/deployments', 'log-analytics')]"
-            ],
-            "properties": {
-                "mode": "Incremental",
-                "templateLink": {
-                    "uri": "[variables('alert-template')]",
-                    "contentVersion": "1.0.0.0"
-                },
-                "parameters": {
-                    "workspaceName": {
-                        "value": "log-analytics"
-                    },
-                    "alertQuery": {
-                        "value": "[variables('alertQuery')]"
-                    },
-                    "location": {
-                        "value": "[variables('location')]"
-                    },
-                    "emailAddress": {
-                        "value": "[parameters('emailAddress')]"
-                    }
-                }
-            }
-        },
+        // {
+        //     "comments": "Deploys an alert (function execution failure) and an action group to send an email on alert.",
+        //     "type": "Microsoft.Resources/deployments",
+        //     "apiVersion": "2019-10-01",
+        //     "name": "alert",
+        //     "dependsOn": [
+        //         "[resourceId('Microsoft.Resources/deployments', 'log-analytics')]"
+        //     ],
+        //     "properties": {
+        //         "mode": "Incremental",
+        //         "templateLink": {
+        //             "uri": "[variables('alert-template')]",
+        //             "contentVersion": "1.0.0.0"
+        //         },
+        //         "parameters": {
+        //             "workspaceName": {
+        //                 "value": "log-analytics"
+        //             },
+        //             "alertQuery": {
+        //                 "value": "[variables('alertQuery')]"
+        //             },
+        //             "location": {
+        //                 "value": "[variables('location')]"
+        //             },
+        //             "emailAddress": {
+        //                 "value": "[parameters('emailAddress')]"
+        //             }
+        //         }
+        //     }
+        // },
         {
             "comments": "Deploys an Azure Key Vault instance and creates secrets for both GitHub and ADO access.",
             "type": "Microsoft.Resources/deployments",
