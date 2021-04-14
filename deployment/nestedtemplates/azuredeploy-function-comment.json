@@ -59,10 +59,10 @@
                             "name": "FUNCTIONS_EXTENSION_VERSION",
                             "value": "~3"
                         },
-                        {
-                            "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
-                            "value": "[reference(resourceId('microsoft.insights/components/', parameters('FunctionAppName')), '2018-05-01-preview').InstrumentationKey]"
-                        },
+                        // {
+                        //     "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
+                        //     "value": "[reference(resourceId('microsoft.insights/components/', parameters('FunctionAppName')), '2018-05-01-preview').InstrumentationKey]"
+                        // },
                         {
                             "name": "WEBSITE_CONTENTAZUREFILECONNECTIONSTRING",
                             "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', parameters('storageAccountName'), ';AccountKey=', listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')),'2017-06-01').keys[0].value)]"
