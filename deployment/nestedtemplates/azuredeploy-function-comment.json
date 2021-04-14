@@ -40,7 +40,7 @@
                 "type": "SystemAssigned"
             },
             "dependsOn": [
-                "[resourceId('Microsoft.Web/serverfarms/', variables('hostingPlanName'))]",
+                "[resourceId('Microsoft.Web/serverfarms/', variables('hostingPlanName'))]"
                 // "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))]",
                //  "[resourceId('microsoft.insights/components/', parameters('FunctionAppName'))]"
             ],

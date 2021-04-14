@@ -75,7 +75,7 @@
             "kind": "functionapp,linux,container",
             "location": "[resourceGroup().location]",
             "dependsOn": [
-                "[resourceId('Microsoft.Web/serverfarms/', variables('hostingPlanName'))]",
+                "[resourceId('Microsoft.Web/serverfarms/', variables('hostingPlanName'))]"
                 // "[resourceId('Microsoft.Storage/storageAccounts/', parameters('storageAccountName'))]",
                 // "[resourceId('Microsoft.Insights/components', parameters('FunctionAppName'))]"
             ],
