@@ -216,11 +216,11 @@
                     "NotificationDockerImage": {
                         "value": "[parameters('NotificationDockerImage')]"
                     },
-                    "location": {
-                        "value": "[variables('location')]"
-                    },
                     "storageAccountName": {
                         "value": "[reference('storage-account').outputs.storageAccountName.value]"
+                    },
+                    "location": {
+                        "value": "[variables('location')]"
                     }
                 }
             }

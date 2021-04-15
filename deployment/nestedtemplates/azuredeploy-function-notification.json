@@ -31,6 +31,9 @@
         },
         "storageAccountName": {
             "type" : "string"
+        },
+        "Location": {
+            "type": "string"
         }
     },
     "variables": {
@@ -41,7 +44,7 @@
             "type": "Microsoft.Web/serverfarms",
             "apiVersion": "2020-06-01",
             "name": "[variables('hostingPlanName')]",
-            "location": "[resourceGroup().location]",
+            "location": "[parameters('Location')]",
             "kind": "linux",
             "properties": {
                 "reserved": true
@@ -56,7 +59,7 @@
             "apiVersion": "2018-11-01",
             "name": "[parameters('FunctionAppName')]",
             "kind": "functionapp,linux,container",
-            "location": "[resourceGroup().location]",
+            "location": "[parameters('Location')]",
             "dependsOn": [
                 "[resourceId('Microsoft.Web/serverfarms/', variables('hostingPlanName'))]"
             ],
