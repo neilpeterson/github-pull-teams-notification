@@ -231,7 +231,7 @@
                 }
             }
         },
-        {
+        // {
         //     "comments": "Grants the Azure Function created identity read access to Key Vault secrets.",
         //     "type": "Microsoft.Resources/deployments",
         //     "apiVersion": "2019-10-01",
