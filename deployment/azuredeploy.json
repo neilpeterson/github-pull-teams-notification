@@ -153,9 +153,6 @@
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
-                    "workSpaceResourceId": {
-                        "value": "[reference('log-analytics').outputs.workSpaceResourceId.value]"
-                    },
                     "functionAppName": {
                         "value": "[concat('comment-', variables('uniqueName'))]"
                     },
@@ -192,9 +189,6 @@
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
-                    "workSpaceResourceId": {
-                        "value": "[reference('log-analytics').outputs.workSpaceResourceId.value]"
-                    },
                     "FunctionAppName": {
                         "value": "[concat('notification-', variables('uniqueName'))]"
                     },
