@@ -170,7 +170,7 @@
                         "value": "[parameters('GitHubPAT')]"
                     },
                     "storageAccountName": {
-                        "value": "[reference('storage-account').outputs.storageAccountName.value]"
+                        "value": "[reference('log-analytics').outputs.storageAccountName.value]"
                     }
                 }
             }
@@ -227,7 +227,7 @@
                         "value": "[variables('location')]"
                     },
                     "storageAccountName": {
-                        "value": "[reference('storage-account').outputs.storageAccountName.value]"
+                        "value": "[reference('log-analytics').outputs.storageAccountName.value]"
                     }
                 }
             }
