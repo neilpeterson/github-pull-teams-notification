@@ -231,6 +231,7 @@
                 }
             }
         },
+        // I am working on this, should work for comments, need to get working for notification
         {
             "comments": "Grants the Azure Function created identity read access to Key Vault secrets.",
             "type": "Microsoft.Resources/deployments",
