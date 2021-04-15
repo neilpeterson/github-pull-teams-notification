@@ -16,6 +16,9 @@
         },
         "storageAccountName": {
             "type" : "string"
+        },
+        "WorkspaceResourceId": {
+            "type": "string"
         }
     },
     "variables": {
@@ -25,6 +28,17 @@
         "runtimeStack": "powershell"
     },
     "resources": [
+        {
+            "type": "Microsoft.Insights/components",
+            "apiVersion": "2020-02-02-preview",
+            "name": "[parameters('FunctionAppName')]",
+            "location": "[parameters('location')]",
+            "properties": {
+                "ApplicationId": "[parameters('functionAppName')]",
+                "Application_Type": "other",
+                "WorkspaceResourceId": "[parameters('workSpaceResourceId')]"
+            }
+        },
         {
             "type": "Microsoft.Web/serverfarms",
             "apiVersion": "2020-06-01",
@@ -82,6 +96,10 @@
                         {
                             "name": "GitHubPAT",
                             "value": "[concat('@Microsoft.KeyVault(SecretUri=', parameters('GitHubPAT'),')')]"
+                        },
+                        {
+                            "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
+                            "value": "[reference(resourceId('microsoft.insights/components/', parameters('functionAppName')), '2018-05-01-preview').InstrumentationKey]"
                         }
                     ],
                     "scmType": "None"

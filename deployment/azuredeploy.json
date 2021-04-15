@@ -167,6 +167,9 @@
                     },
                     "storageAccountName": {
                         "value": "[reference('storage-account').outputs.storageAccountName.value]"
+                    },
+                    "WorkspaceResourceId": {
+                        "value": "[reference('log-analytics').outputs.workSpaceResourceId.value]"
                     }
                 }
             }
@@ -221,6 +224,9 @@
                     },
                     "location": {
                         "value": "[variables('location')]"
+                    },
+                    "WorkspaceResourceId": {
+                        "value": "[reference('log-analytics').outputs.workSpaceResourceId.value]"
                     }
                 }
             }
