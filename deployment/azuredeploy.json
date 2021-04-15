@@ -166,7 +166,10 @@
                         "value": "[reference('key-vault').outputs.GitHubPATUri.value]"
                     },
                     "storageAccountName": {
-                        "value": "[reference('log-analytics').outputs.storageAccountName.value]"
+                        "value": "[reference('storage-account').outputs.storageAccountName.value]"
+                    },
+                    "WorkspaceResourceId": {
+                        "value": "[reference('log-analytics').outputs.workSpaceResourceId.value]"
                     }
                 }
             }
@@ -222,10 +225,6 @@
                     "location": {
                         "value": "[variables('location')]"
                     },
-<<<<<<< HEAD
-                    "storageAccountName": {
-                        "value": "[reference('log-analytics').outputs.storageAccountName.value]"
-=======
                     "WorkspaceResourceId": {
                         "value": "[reference('log-analytics').outputs.workSpaceResourceId.value]"
                     }
@@ -278,7 +277,6 @@
                     },
                     "KeyVaultName": {
                         "value": "[variables('kay-vault-name')]"
->>>>>>> d86eef1436ac4e0b71c35f8a9c4648393391f474
                     }
                 }
             }

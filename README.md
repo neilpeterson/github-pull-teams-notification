@@ -43,11 +43,7 @@ These values are needed when deploying the solution. At deployment time, you are
 Create a resource group for the deployment.
 
 ```azurecli
-<<<<<<< HEAD
-az group create --name github-pr-teams-notification-docker-205 --location eastus
-=======
 az group create --name github-pr-teams-notification-docker-208 --location eastus
->>>>>>> d86eef1436ac4e0b71c35f8a9c4648393391f474
 ```
 
 Run the following command to initiate the deployment. When prompted, enter the value for each parameter.
