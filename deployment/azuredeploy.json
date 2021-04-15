@@ -144,8 +144,7 @@
             "dependsOn": [
                 "[resourceId('Microsoft.Resources/deployments', 'log-analytics')]",
                 "[resourceId('Microsoft.Resources/deployments', 'key-vault')]",
-                "[resourceId('Microsoft.Resources/deployments', 'storage-account')]",
-                "[resourceId('Microsoft.Resources/deployments', 'key-vault-access-comment')]"
+                "[resourceId('Microsoft.Resources/deployments', 'storage-account')]"
             ],
             "properties": {
                 "mode": "Incremental",
@@ -184,8 +183,7 @@
                 "[resourceId('Microsoft.Resources/deployments', 'log-analytics')]",
                 "[resourceId('Microsoft.Resources/deployments', 'key-vault')]",
                 "[resourceId('Microsoft.Resources/deployments', 'function-comment')]",
-                "[resourceId('Microsoft.Resources/deployments', 'storage-account')]",
-                "[resourceId('Microsoft.Resources/deployments', 'key-vault-access-notification')]"
+                "[resourceId('Microsoft.Resources/deployments', 'storage-account')]"
             ],
             "properties": {
                 "mode": "Incremental",
