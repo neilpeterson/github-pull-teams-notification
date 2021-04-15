@@ -256,31 +256,31 @@
                 }
             }
         },
-        {
-            "comments": "Grants the Azure Function created identity read access to Key Vault secrets.",
-            "type": "Microsoft.Resources/deployments",
-            "apiVersion": "2019-10-01",
-            "name": "key-vault-access",
-            "dependsOn": [
-                "[resourceId('Microsoft.Resources/deployments', 'key-vault')]",
-                "[resourceId('Microsoft.Resources/deployments', 'function-notification')]"
-            ],
-            "properties": {
-                "mode": "Incremental",
-                "templateLink": {
-                    "uri": "[variables('key-vault-access-tempalte')]",
-                    "contentVersion": "1.0.0.0"
-                },
-                "parameters": {
-                    "AccessIdentity": {
-                        "value": "[reference('function-comment').outputs.identity.value]"
-                    },
-                    "KeyVaultName": {
-                        "value": "[variables('kay-vault-name')]"
-                    }
-                }
-            }
-        },
+        // {
+        //     "comments": "Grants the Azure Function created identity read access to Key Vault secrets.",
+        //     "type": "Microsoft.Resources/deployments",
+        //     "apiVersion": "2019-10-01",
+        //     "name": "key-vault-access",
+        //     "dependsOn": [
+        //         "[resourceId('Microsoft.Resources/deployments', 'key-vault')]",
+        //         "[resourceId('Microsoft.Resources/deployments', 'function-notification')]"
+        //     ],
+        //     "properties": {
+        //         "mode": "Incremental",
+        //         "templateLink": {
+        //             "uri": "[variables('key-vault-access-tempalte')]",
+        //             "contentVersion": "1.0.0.0"
+        //         },
+        //         "parameters": {
+        //             "AccessIdentity": {
+        //                 "value": "[reference('function-comment').outputs.identity.value]"
+        //             },
+        //             "KeyVaultName": {
+        //                 "value": "[variables('kay-vault-name')]"
+        //             }
+        //         }
+        //     }
+        // },
         {
             "comments": "Optional, deploys a deployment script resource to remove the function's source control integration.",
             "condition": "[parameters('RemoveSourceControll')]",
