@@ -43,17 +43,6 @@
         "hostingPlanName": "[parameters('FunctionAppName')]"
     },
     "resources": [
-        // {
-        //     "type": "Microsoft.Insights/components",
-        //     "apiVersion": "2020-02-02-preview",
-        //     "name": "[parameters('FunctionAppName')]",
-        //     "location": "[parameters('Location')]",
-        //     "properties": {
-        //         "ApplicationId": "[parameters('FunctionAppName')]",
-        //         "Application_Type": "other",
-        //         "WorkspaceResourceId": "[parameters('workSpaceResourceId')]"
-        //     }
-        // },
         {
             "type": "Microsoft.Web/serverfarms",
             "apiVersion": "2020-06-01",
@@ -76,8 +65,6 @@
             "location": "[resourceGroup().location]",
             "dependsOn": [
                 "[resourceId('Microsoft.Web/serverfarms/', variables('hostingPlanName'))]"
-                // "[resourceId('Microsoft.Storage/storageAccounts/', parameters('storageAccountName'))]",
-                // "[resourceId('Microsoft.Insights/components', parameters('FunctionAppName'))]"
             ],
             "properties": {
                 "serverFarmId": "[resourceId('Microsoft.Web/serverfarms/', variables('hostingPlanName'))]",
@@ -98,10 +85,6 @@
                             "name": "FUNCTIONS_EXTENSION_VERSION",
                             "value": "~3"
                         },
-                        // {
-                        //     "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
-                        //     "value": "[reference(resourceId('microsoft.insights/components/', parameters('FunctionAppName')), '2018-05-01-preview').InstrumentationKey]"
-                        // },
                         {
                             "name": "WEBSITE_CONTENTAZUREFILECONNECTIONSTRING",
                             "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', parameters('storageAccountName'), ';AccountKey=', listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')),'2017-06-01').keys[0].value)]"
@@ -112,7 +95,7 @@
                         },
                         {
                             "name": "GitHubPAT",
-                            "value": "[parameters('GitHubPAT')]"
+                            "value": "[concat('@Microsoft.KeyVault(SecretUri=', parameters('GitHubPAT'),')')]"
                         },
                         {
                             "name": "TeamsWebHook",
@@ -146,15 +129,15 @@
                 }
             }
         }
-    ]
-    // "outputs": {
-    //     "functionKey": {
-    //         "type": "securestring",
-    //         "value": "[listkeys(concat(resourceId('Microsoft.Web/sites', parameters('FunctionAppName')), '/host/default/'),'2018-02-01').masterkey]"
-    //     },
-    //     "identity": {
-    //         "type": "string",
-    //         "value": "[reference(resourceId('Microsoft.Web/sites', parameters('FunctionAppName')), '2019-08-01', 'full').identity.principalId]"
-    //     }
-    // }
+    ],
+    "outputs": {
+        "functionKey": {
+            "type": "securestring",
+            "value": "[listkeys(concat(resourceId('Microsoft.Web/sites', parameters('FunctionAppName')), '/host/default/'),'2018-02-01').masterkey]"
+        },
+        "identity": {
+            "type": "string",
+            "value": "[reference(resourceId('Microsoft.Web/sites', parameters('FunctionAppName')), '2019-08-01', 'full').identity.principalId]"
+        }
+    }
 }
