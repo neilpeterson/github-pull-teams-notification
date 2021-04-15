@@ -5,31 +5,55 @@
         "Location": {
             "type": "string"
         },
-        "WorkSpaceResourceId": {
-            "type": "string"
-        },
         "FunctionAppName": {
             "type": "string"
         },
         "FunctionSourceRepo": {
             "type": "string"
         },
-        "GitHubPATUri": {
+        "GitHubPAT": {
             "type": "securestring"
         },
         "storageAccountName": {
             "type" : "string"
+        },
+        "WorkspaceResourceId": {
+            "type": "string"
         }
     },
     "variables": {
         "hostingPlanName": "[parameters('FunctionAppName')]",
-        "storageAccountName": "[concat('storage', uniquestring(resourceGroup().id))]",
         "branch": "master",
-        "ApplicationInsightsLocation": "West Europe",
         "timezone": "UTC",
         "runtimeStack": "powershell"
     },
     "resources": [
+        {
+            "type": "Microsoft.Insights/components",
+            "apiVersion": "2020-02-02-preview",
+            "name": "[parameters('FunctionAppName')]",
+            "location": "[parameters('location')]",
+            "properties": {
+                "ApplicationId": "[parameters('functionAppName')]",
+                "Application_Type": "other",
+                "WorkspaceResourceId": "[parameters('workSpaceResourceId')]"
+            }
+        },
+        {
+            "type": "Microsoft.Web/serverfarms",
+            "apiVersion": "2020-06-01",
+            "name": "[variables('hostingPlanName')]",
+            "location": "[parameters('Location')]",
+            "sku": {
+                "name": "Y1",
+                "tier": "Dynamic"
+            },
+            "kind": "elastic",
+            "properties": {
+                "name": "[variables('hostingPlanName')]",
+                "maximumElasticWorkerCount": 20
+            }
+        },
         {
             "type": "Microsoft.Web/sites",
             "apiVersion": "2020-06-01",
@@ -40,9 +64,7 @@
                 "type": "SystemAssigned"
             },
             "dependsOn": [
-                "[resourceId('Microsoft.Web/serverfarms/', variables('hostingPlanName'))]",
-                // "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))]",
-                "[resourceId('microsoft.insights/components/', parameters('FunctionAppName'))]"
+                "[resourceId('Microsoft.Web/serverfarms/', variables('hostingPlanName'))]"
             ],
             "properties": {
                 "siteConfig": {
@@ -60,10 +82,6 @@
                             "value": "~3"
                         },
                         {
-                            "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
-                            "value": "[reference(resourceId('microsoft.insights/components/', parameters('FunctionAppName')), '2018-05-01-preview').InstrumentationKey]"
-                        },
-                        {
                             "name": "WEBSITE_CONTENTAZUREFILECONNECTIONSTRING",
                             "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', parameters('storageAccountName'), ';AccountKey=', listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')),'2017-06-01').keys[0].value)]"
                         },
@@ -77,8 +95,11 @@
                         },
                         {
                             "name": "GitHubPAT",
-                            // "value": "[concat('@Microsoft.KeyVault(SecretUri=', parameters('GitHubPATUri'), ')')]"
-                            "vale": "[parameters('GitHubPATUri')]"
+                            "value": "[concat('@Microsoft.KeyVault(SecretUri=', parameters('GitHubPAT'),')')]"
+                        },
+                        {
+                            "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
+                            "value": "[reference(resourceId('microsoft.insights/components/', parameters('functionAppName')), '2018-05-01-preview').InstrumentationKey]"
                         }
                     ],
                     "scmType": "None"
@@ -102,42 +123,6 @@
                     }
                 }
             ]
-        },
-        {
-            "type": "Microsoft.Web/serverfarms",
-            "apiVersion": "2020-06-01",
-            "name": "[variables('hostingPlanName')]",
-            "location": "[parameters('Location')]",
-            "sku": {
-                "name": "Y1",
-                "tier": "Dynamic"
-            },
-            "kind": "elastic",
-            "properties": {
-                "name": "[variables('hostingPlanName')]",
-                "maximumElasticWorkerCount": 20
-            }
-        },
-        // {
-        //     "type": "Microsoft.Storage/storageAccounts",
-        //     "apiVersion": "2019-06-01",
-        //     "name": "[parameters('storageAccountName')]",
-        //     "location": "[parameters('Location')]",
-        //     "sku": {
-        //         "name": "Standard_LRS"
-        //     },
-        //     "kind": "Storage"
-        // },
-        {
-            "type": "Microsoft.Insights/components",
-            "apiVersion": "2020-02-02-preview",
-            "name": "[parameters('FunctionAppName')]",
-            "location": "[variables('ApplicationInsightsLocation')]",
-            "properties": {
-                "ApplicationId": "[parameters('FunctionAppName')]",
-                "Application_Type": "other",
-                "WorkspaceResourceId": "[parameters('WorkSpaceResourceId')]"
-            }
         }
     ],
     "outputs": {
@@ -149,9 +134,5 @@
             "type": "string",
             "value": "[reference(resourceId('Microsoft.Web/sites', parameters('FunctionAppName')), '2019-08-01', 'full').identity.principalId]"
         }
-        // "url": {
-        //     "type": "string",
-        //     "value": "[listsecrets(resourceId('Microsoft.Web/sites/functions', parameters('FunctionAppName'), 'github-pull-teams-comment'),'2015-08-01').trigger_url]"
-        // }
     }
 }

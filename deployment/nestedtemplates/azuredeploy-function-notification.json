@@ -2,9 +2,6 @@
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "workSpaceResourceId": {
-            "type": "string"
-        },
         "FunctionAppName": {
             "type": "string"
         },
@@ -32,11 +29,14 @@
         "NotificationDockerImage": {
             "type": "string"
         },
+        "storageAccountName": {
+            "type" : "string"
+        },
         "Location": {
             "type": "string"
         },
-        "storageAccountName": {
-            "type" : "string"
+        "WorkspaceResourceId": {
+            "type": "string"
         }
     },
     "variables": {
@@ -47,9 +47,9 @@
             "type": "Microsoft.Insights/components",
             "apiVersion": "2020-02-02-preview",
             "name": "[parameters('FunctionAppName')]",
-            "location": "[parameters('Location')]",
+            "location": "[parameters('location')]",
             "properties": {
-                "ApplicationId": "[parameters('FunctionAppName')]",
+                "ApplicationId": "[parameters('functionAppName')]",
                 "Application_Type": "other",
                 "WorkspaceResourceId": "[parameters('workSpaceResourceId')]"
             }
@@ -58,7 +58,7 @@
             "type": "Microsoft.Web/serverfarms",
             "apiVersion": "2020-06-01",
             "name": "[variables('hostingPlanName')]",
-            "location": "[resourceGroup().location]",
+            "location": "[parameters('Location')]",
             "kind": "linux",
             "properties": {
                 "reserved": true
@@ -73,11 +73,9 @@
             "apiVersion": "2018-11-01",
             "name": "[parameters('FunctionAppName')]",
             "kind": "functionapp,linux,container",
-            "location": "[resourceGroup().location]",
+            "location": "[parameters('Location')]",
             "dependsOn": [
-                "[resourceId('Microsoft.Web/serverfarms/', variables('hostingPlanName'))]",
-                // "[resourceId('Microsoft.Storage/storageAccounts/', parameters('storageAccountName'))]",
-                "[resourceId('Microsoft.Insights/components', parameters('FunctionAppName'))]"
+                "[resourceId('Microsoft.Web/serverfarms/', variables('hostingPlanName'))]"
             ],
             "properties": {
                 "serverFarmId": "[resourceId('Microsoft.Web/serverfarms/', variables('hostingPlanName'))]",
@@ -99,10 +97,6 @@
                             "value": "~3"
                         },
                         {
-                            "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
-                            "value": "[reference(resourceId('microsoft.insights/components/', parameters('FunctionAppName')), '2018-05-01-preview').InstrumentationKey]"
-                        },
-                        {
                             "name": "WEBSITE_CONTENTAZUREFILECONNECTIONSTRING",
                             "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', parameters('storageAccountName'), ';AccountKey=', listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')),'2017-06-01').keys[0].value)]"
                         },
@@ -112,7 +106,7 @@
                         },
                         {
                             "name": "GitHubPAT",
-                            "value": "[parameters('GitHubPAT')]"
+                            "value": "[concat('@Microsoft.KeyVault(SecretUri=', parameters('GitHubPAT'),')')]"
                         },
                         {
                             "name": "TeamsWebHook",
@@ -141,20 +135,24 @@
                         {
                             "name": "WEBSITES_ENABLE_APP_SERVICE_STORAGE",
                             "value": "false"
+                        },
+                        {
+                            "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
+                            "value": "[reference(resourceId('microsoft.insights/components/', parameters('functionAppName')), '2018-05-01-preview').InstrumentationKey]"
                         }
                     ]
                 }
             }
         }
-    ]
-    // "outputs": {
-    //     "functionKey": {
-    //         "type": "securestring",
-    //         "value": "[listkeys(concat(resourceId('Microsoft.Web/sites', parameters('FunctionAppName')), '/host/default/'),'2018-02-01').masterkey]"
-    //     },
-    //     "identity": {
-    //         "type": "string",
-    //         "value": "[reference(resourceId('Microsoft.Web/sites', parameters('FunctionAppName')), '2019-08-01', 'full').identity.principalId]"
-    //     }
-    // }
+    ],
+    "outputs": {
+        "functionKey": {
+            "type": "securestring",
+            "value": "[listkeys(concat(resourceId('Microsoft.Web/sites', parameters('FunctionAppName')), '/host/default/'),'2018-02-01').masterkey]"
+        },
+        "identity": {
+            "type": "string",
+            "value": "[reference(resourceId('Microsoft.Web/sites', parameters('FunctionAppName')), '2019-08-01', 'full').identity.principalId]"
+        }
+    }
 }
