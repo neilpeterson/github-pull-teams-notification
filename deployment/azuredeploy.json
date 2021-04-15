@@ -273,7 +273,7 @@
                 },
                 "parameters": {
                     "AccessIdentity": {
-                        "value": "[reference('function-comment').outputs.identity.value]"
+                        "value": "[reference('function-notification').outputs.identity.value]"
                     },
                     "KeyVaultName": {
                         "value": "[variables('kay-vault-name')]"
