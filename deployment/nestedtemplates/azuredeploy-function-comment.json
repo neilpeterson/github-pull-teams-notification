@@ -95,7 +95,8 @@
                         },
                         {
                             "name": "GitHubPAT",
-                            "value": "[concat('@Microsoft.KeyVault(SecretUri=', parameters('GitHubPAT'),')')]"
+                            "value": "[parameters('GitHubPAT')]"
+                            // "value": "[concat('@Microsoft.KeyVault(SecretUri=', parameters('GitHubPAT'),')')]"
                         },
                         {
                             "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
