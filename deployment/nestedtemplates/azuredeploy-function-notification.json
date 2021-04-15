@@ -5,7 +5,7 @@
         "FunctionAppName": {
             "type": "string"
         },
-        "GitHubPAT": {
+        "GitHubPATKVUri": {
             "type": "securestring"
         },
         "TeamsWebHook": {
@@ -109,7 +109,7 @@
                         },
                         {
                             "name": "GitHubPAT",
-                            "value": "[concat('@Microsoft.KeyVault(SecretUri=', parameters('GitHubPAT'),')')]"
+                            "value": "[concat('@Microsoft.KeyVault(SecretUri=', parameters('GitHubPATKVUri'),')')]"
                         },
                         {
                             "name": "TeamsWebHook",

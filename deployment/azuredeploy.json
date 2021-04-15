@@ -144,7 +144,8 @@
             "dependsOn": [
                 "[resourceId('Microsoft.Resources/deployments', 'log-analytics')]",
                 "[resourceId('Microsoft.Resources/deployments', 'key-vault')]",
-                "[resourceId('Microsoft.Resources/deployments', 'storage-account')]"
+                "[resourceId('Microsoft.Resources/deployments', 'storage-account')]",
+                "[resourceId('Microsoft.Resources/deployments', 'key-vault-access-comment')]"
             ],
             "properties": {
                 "mode": "Incremental",
@@ -162,7 +163,7 @@
                     "location": {
                         "value": "[variables('location')]"
                     },
-                    "GitHubPAT": {
+                    "GitHubPATKVUri": {
                         "value": "[reference('key-vault').outputs.GitHubPATUri.value]"
                     },
                     "storageAccountName": {
@@ -183,7 +184,8 @@
                 "[resourceId('Microsoft.Resources/deployments', 'log-analytics')]",
                 "[resourceId('Microsoft.Resources/deployments', 'key-vault')]",
                 "[resourceId('Microsoft.Resources/deployments', 'function-comment')]",
-                "[resourceId('Microsoft.Resources/deployments', 'storage-account')]"
+                "[resourceId('Microsoft.Resources/deployments', 'storage-account')]",
+                "[resourceId('Microsoft.Resources/deployments', 'key-vault-access-notification')]"
             ],
             "properties": {
                 "mode": "Incremental",
@@ -195,8 +197,8 @@
                     "FunctionAppName": {
                         "value": "[concat('notification-', variables('uniqueName'))]"
                     },
-                    "GitHubPAT": {
-                        "value": "[parameters('GitHubPAT')]"
+                    "GitHubPATKVUri": {
+                        "value": "[reference('key-vault').outputs.GitHubPATUri.value]"
                     },
                     "TeamsWebHook": {
                         "value": "[parameters('TeamsWebHook')]"
@@ -231,7 +233,6 @@
                 }
             }
         },
-        // I am working on this, should work for comments, need to get working for notification
         {
             "comments": "Grants the Azure Function created identity read access to Key Vault secrets.",
             "type": "Microsoft.Resources/deployments",
@@ -239,7 +240,7 @@
             "name": "key-vault-access-notification",
             "dependsOn": [
                 "[resourceId('Microsoft.Resources/deployments', 'key-vault')]",
-                "[resourceId('Microsoft.Resources/deployments', 'function-notification')]"
+                "[resourceId('Microsoft.Resources/deployments', 'function-comment')]"
             ],
             "properties": {
                 "mode": "Incremental",
@@ -261,7 +262,7 @@
             "comments": "Grants the Azure Function created identity read access to Key Vault secrets.",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2019-10-01",
-            "name": "key-vault-access",
+            "name": "key-vault-access-comment",
             "dependsOn": [
                 "[resourceId('Microsoft.Resources/deployments', 'key-vault')]",
                 "[resourceId('Microsoft.Resources/deployments', 'function-notification')]"
