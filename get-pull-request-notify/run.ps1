@@ -106,6 +106,10 @@ foreach ($pull in $pulls) {
         
         $creationDate = $pull.created_at
         $dateDiff = ((get-date) - ($creationDate))
+
+        write-output "-----------------"
+        write-output "$dateDiff"
+        write-output "-----------------"
         
         if ($dateDiff.Days -ge $env:DelayDays) {    
             $finalDiff = Get-PullRequestDiff($pull)
