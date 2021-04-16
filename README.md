@@ -13,6 +13,9 @@ The logic for this solution is split between two Azure Functions.
 
 In addition to the Azure Functions, this solution includes Azure Key Vault for storing sensitive application values, Azure Log Analytics workspace for storing solution logs. An Azure Monitor alert is also configured to send a notification email if function execution fails.
 
+> [!NOTE]
+> When building this solution, I have encountered a PowerShell multi-line string formatting issue (detailed here - [issue](https://github.com/neilpeterson/github-pull-teams-notification/issues/1)) when running under the Azure Function PowerShell runtime. To work around this issue, the notification function is running from the Azure Function container runtime. This configuration has led to some cost and complexity trade offs. I plan to re-visit and hopefully move the function to the native PowerShell Azure Function runtime..
+
 ## Configuration
 
 To configure this solution:
@@ -43,14 +46,14 @@ These values are needed when deploying the solution. At deployment time, you are
 Create a resource group for the deployment.
 
 ```azurecli
-az group create --name github-pr-teams-notification-docker-500 --location eastus
+az group create --name github-pr-teams-notification--location eastus
 ```
 
 Run the following command to initiate the deployment. When prompted, enter the value for each parameter.
 
 ```azurecli
 az deployment group create \
-    --resource-group github-pr-teams-notification-docker-500 \
+    --resource-group github-pr-teams-notification \
     --template-uri https://raw.githubusercontent.com/neilpeterson/github-pull-teams-notification/master/deployment/azuredeploy.json
 ```
 
@@ -58,7 +61,7 @@ Add `RemoveSourceControll=true` to remove source controll integration.
 
 ```azurecli
 az deployment group create \
-    --resource-group github-pr-teams-notification-009 \
+    --resource-group github-pr-teams-notification \
     --template-uri https://raw.githubusercontent.com/neilpeterson/github-pr-teams-notification/master/deployment/azuredeploy.json
     --parameters RemoveSourceControll=true
 ```

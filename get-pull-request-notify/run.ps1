@@ -107,7 +107,7 @@ foreach ($pull in $pulls) {
         $creationDate = $pull.created_at
         $dateDiff = ((get-date) - ($creationDate))
         
-        if ($dateDiff.Days -gt $env:DelayDays) {    
+        if ($dateDiff.Days -ge $env:DelayDays) {    
             $finalDiff = Get-PullRequestDiff($pull)
             Send-TeamsMessage $pull $finalDiff
         }
