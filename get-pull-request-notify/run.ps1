@@ -11,8 +11,11 @@ $Strings = @(
 # Get pull request diff and format for Teams.
 function Get-PullRequestDiff ($diff) {
 
+    # Added accept output to header which returns the diff
+    $GitHubHeaderDiff = @{authorization = "Token $env:GitHubPAT"; Accept =  "application/vnd.github.v3.diff"}
+
     # Get Pull Request diff from GitHub diff API.
-    Try {$diff = Invoke-RestMethod -Uri $pull.diff_url -Method Get -Headers $GitHubHeader}
+    Try {$diff = Invoke-RestMethod -Uri $diff.url -Method Get -Headers $GitHubHeaderDiff}
     Catch {throw $_.Exception.Message}
 
     # Format diff for Teams webhook (add line break)
@@ -20,6 +23,7 @@ function Get-PullRequestDiff ($diff) {
     foreach ($pull in $lines) {
         $results += "$pull <br>"
     }
+    
     return $results
 }
 
@@ -91,7 +95,6 @@ function Send-TeamsMessage ($PullDetails, $diff) {
         "Body"        = $webhookMessage
         "ContentType" = 'application/json'
     }
-
     Invoke-RestMethod @webhookCall
 }
 
@@ -102,16 +105,12 @@ Catch {throw $_.Exception.Message}
 
 # Process pull requests and send Teams notification if applicable.
 foreach ($pull in $pulls) {
+
     if ($pull.title -like $env:PullRequestTitleFilter) {
-        
         $creationDate = $pull.created_at
         $dateDiff = ((get-date) - ($creationDate))
-
-        write-output "-----------------"
-        write-output "$dateDiff"
-        write-output "-----------------"
         
-        if ($dateDiff.Days -ge $env:DelayDays) {    
+        if ($dateDiff.Days -ge $env:DelayDays) {   
             $finalDiff = Get-PullRequestDiff($pull)
             Send-TeamsMessage $pull $finalDiff
         }
