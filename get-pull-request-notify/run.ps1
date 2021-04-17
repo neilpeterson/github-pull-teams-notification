@@ -6,6 +6,8 @@ $Strings = @(
     "View PR"
     "Comment on PR"
     "Submit Comment"
+    "<br> No diff to display, please see the Pull Request"
+    "Pull Request Diff"
 )
 
 # Get pull request diff and format for Teams.
@@ -20,9 +22,14 @@ function Get-PullRequestDiff ($diff) {
 
     # Format diff for Teams webhook (add line break)
     $lines = $diff.Split([Environment]::NewLine) | ? { $_ -ne "" }
+    $results += "<br>"
     foreach ($pull in $lines) {
         $results += "$pull <br>"
     }
+
+    if (!$results) {
+        $results = $string[5]
+    } 
     
     return $results
 }
@@ -46,7 +53,7 @@ function Send-TeamsMessage ($PullDetails, $diff) {
                 "activityText" = $PullDetails.title
             }
             @{
-                "activityTitle" = "Pull Request Diff"
+                "activityTitle" = $Strings[6]
                 "activityText" = $diff
             }
         )
