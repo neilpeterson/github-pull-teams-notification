@@ -108,8 +108,6 @@
             "name": "function-notification",
             "dependsOn": [
                 "[resourceId('Microsoft.Resources/deployments', 'log-analytics')]",
-                "[resourceId('Microsoft.Resources/deployments', 'key-vault')]",
-                "[resourceId('Microsoft.Resources/deployments', 'function-comment')]",
                 "[resourceId('Microsoft.Resources/deployments', 'storage-account')]"
             ],
             "properties": {
