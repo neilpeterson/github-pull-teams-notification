@@ -20,12 +20,6 @@
         "DelayDays": {
             "type": "int"
         },
-        "PreDeterminedCommentLabel": {
-            "type": "string"
-        },
-        "PreDeterminedComment": {
-            "type": "string"
-        },
         "NotificationDockerImage": {
             "type": "string"
         },
@@ -126,14 +120,6 @@
                         {
                             "name": "DelayDays",
                             "value": "[parameters('DelayDays')]"
-                        },
-                        {
-                            "name": "PreDeterminedComment",
-                            "value": "[parameters('PreDeterminedComment')]"
-                        },
-                        {
-                            "name": "PreDeterminedCommentLabel",
-                            "value": "[parameters('PreDeterminedCommentLabel')]"
                         },
                         {
                             "name": "WEBSITES_ENABLE_APP_SERVICE_STORAGE",
