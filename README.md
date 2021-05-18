@@ -46,36 +46,13 @@ These values are needed when deploying the solution. At deployment time, you are
 Create a resource group for the deployment.
 
 ```azurecli
-az group create --name github-pr-teams-pnp-001 --location eastus
+az group create --name github-pr-teams-pnp-002 --location eastus
 ```
 
 Run the following command to initiate the deployment. When prompted, enter the value for each parameter.
 
 ```azurecli
 az deployment group create \
-    --resource-group github-pr-teams-pnp-001 \
-    --template-uri https://raw.githubusercontent.com/neilpeterson/github-pull-teams-notification/master/deployment/azuredeploy.json
+    --resource-group github-pr-teams-pnp-002 \
+    --template-uri https://raw.githubusercontent.com/neilpeterson/github-pull-teams-notification/remove-comment/deployment/azuredeploy.json
 ```
-
-Add `RemoveSourceControll=true` to remove source controll integration.
-
-```azurecli
-az deployment group create \
-    --resource-group github-pr-teams-notification \
-    --template-uri https://raw.githubusercontent.com/neilpeterson/github-pr-teams-notification/master/deployment/azuredeploy.json
-    --parameters RemoveSourceControll=true
-```
-
-## Configure WebHook on Function
-
-Once the deployment has completed, retrieve the Function webhook address from the comment function, and add this to the Teams notification function's application configuration.
-
-To get the function webhook address, navigate to the **github-pr-teams-comment** function and copy the function URL.
-
-![](images/function-url.png)
-
-Next, navigate to the function app, select configuration, and select **New application setting**. Enter **CommentFunctionWebhook** for the name and paste in the webhook address for the value.
-
-![](images/app-setting.png)
-
-Click **OK**, **Save**, and **Continue**.
