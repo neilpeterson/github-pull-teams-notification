@@ -69,31 +69,6 @@ function Send-TeamsMessage ($PullDetails, $diff) {
                     }
                 )
             }
-            @{
-                '@type' = "HttpPOST"
-                name = $env:PreDeterminedCommentLabel
-                target = $env:CommentFunctionWebhook
-                body = $env:PreDeterminedComment + ',' + $PullDetails.comments_url
-            }
-            @{
-                '@type' = "ActionCard"
-                name = $Strings[3]
-                inputs = @(
-                    @{
-                        "@type" = "TextInput"
-                        "id" = "comment"
-                        "title" = "Add Comment"
-                    }
-                )
-                actions = @(
-                    @{
-                        "@type" = "HttpPOST"
-                        name = $Strings[4]
-                        target = $env:CommentFunctionWebhook
-                        body = "{{comment.value}}" + ',' + $PullDetails.comments_url
-                    }
-                )
-            }
         )
     } | ConvertTo-Json -Depth 50
          
